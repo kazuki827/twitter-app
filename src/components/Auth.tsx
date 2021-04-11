@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+// css
+import styles from './Auth.module.scss';
+// redux
 import { useDispatch } from 'react-redux';
 import { updateUserProfile } from '../features/userSlice';
-import styles from './Auth.module.scss';
-import { auth, provider, storage } from '../firebase';
-
+// firebase
+import { auth, googleProvider, facebookProvider, storage } from '../firebase';
+// MUI stuff
 import {
   Avatar,
   Button,
@@ -15,15 +18,15 @@ import {
   makeStyles,
   Modal,
   IconButton,
-  Box,
+  Box
 } from '@material-ui/core';
-
 import SendIcon from '@material-ui/icons/Send';
 import CameraIcon from '@material-ui/icons/Camera';
+import FacebookIcon from '@material-ui/icons/Facebook';
 import EmailIcon from '@material-ui/icons/Email';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-
+// Forgot password 用モーダル画面中央配置
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -31,12 +34,13 @@ function getModalStyle() {
   return {
     top: `${top}%`,
     left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
+    transform: `translate(-${top}%, -${left}%)`
   };
 }
+// MUI styles
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100vh',
+    height: '100vh'
   },
   modal: {
     outline: 'none',
@@ -45,38 +49,40 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     backgroundColor: 'white',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(10),
+    padding: theme.spacing(10)
   },
   image: {
     backgroundImage: 'url(https://source.unsplash.com/random)',
     backgroundRepeat: 'no-repeat',
-    backgroundColor: theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+    backgroundColor:
+      theme.palette.type === 'light'
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
     backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    backgroundPosition: 'center'
   },
   paper: {
     margin: theme.spacing(8, 4),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.secondary.main
   },
   form: {
     width: '100%',
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
+    margin: theme.spacing(3, 0, 2)
+  }
 }));
 
 const Auth: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
   // state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -98,7 +104,9 @@ const Auth: React.FC = () => {
       .then(() => {
         setOpenModal(false);
         setResetEmail('');
-        alert('A password reset email has been sent to the email address you entered.')
+        alert(
+          'A password reset email has been sent to the email address you entered.'
+        );
       })
       .catch((err) => {
         alert(err.message);
@@ -106,7 +114,14 @@ const Auth: React.FC = () => {
       });
   };
   const signInGoogle = async () => {
-    await auth.signInWithPopup(provider).catch((err) => alert(err.message));
+    await auth
+      .signInWithPopup(googleProvider)
+      .catch((err) => alert(err.message));
+  };
+  const signInFacebook = async () => {
+    await auth
+      .signInWithPopup(facebookProvider)
+      .catch((err) => alert(err.message));
   };
   const signInEmail = async () => {
     await auth.signInWithEmailAndPassword(email, password);
@@ -116,24 +131,26 @@ const Auth: React.FC = () => {
     let url = '';
     if (avatarImage) {
       // ランダムなファイルネームを生成
-      const S = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const S =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       const N = 16;
       const randomChar = Array.from(crypto.getRandomValues(new Uint32Array(N)))
         .map((n) => S[n % S.length])
         .join('');
       const fileName = randomChar + '_' + avatarImage.name;
+      // Storageに保存
       await storage.ref(`avatars/${fileName}`).put(avatarImage);
       url = await storage.ref('avatars').child(fileName).getDownloadURL();
     }
     await authUser.user?.updateProfile({
       displayName: username,
-      photoURL: url,
+      photoURL: url
     });
     dispatch(
       updateUserProfile({
         displayName: username,
-        photoUrl: url,
-      }),
+        photoUrl: url
+      })
     );
   };
 
@@ -149,7 +166,6 @@ const Auth: React.FC = () => {
           <Typography component="h1" variant="h5">
             {isLogin ? 'Login' : 'Register'}
           </Typography>
-
           {/* form */}
           <form className={classes.form} noValidate>
             {/* only register mode */}
@@ -171,22 +187,28 @@ const Auth: React.FC = () => {
                     setUsername(e.target.value);
                   }}
                 />
-
                 {/* avatar */}
                 <Box textAlign="center">
                   <IconButton>
                     <label>
                       <AccountCircleIcon
                         fontSize="large"
-                        className={avatarImage ? styles.login_addIconLoaded : styles.login_addIcon}
+                        className={
+                          avatarImage
+                            ? styles.login_addIconLoaded
+                            : styles.login_addIcon
+                        }
                       />
-                      <input className={styles.login_hiddenIcon} type="file" onChange={onChangeImageHandler} />
+                      <input
+                        className={styles.login_hiddenIcon}
+                        type="file"
+                        onChange={onChangeImageHandler}
+                      />
                     </label>
                   </IconButton>
                 </Box>
               </>
             )}
-
             {/* email */}
             <TextField
               variant="outlined"
@@ -202,7 +224,6 @@ const Auth: React.FC = () => {
                 setEmail(e.target.value);
               }}
             />
-
             {/* password */}
             <TextField
               variant="outlined"
@@ -219,11 +240,12 @@ const Auth: React.FC = () => {
                 setPassword(e.target.value);
               }}
             />
-
             {/* login or register button */}
             <Button
               disabled={
-                isLogin ? !email || password.length < 6 : !username || !email || password.length < 6 || !avatarImage
+                isLogin
+                  ? !email || password.length < 6
+                  : !username || !email || password.length < 6 || !avatarImage
               }
               fullWidth
               variant="contained"
@@ -250,22 +272,26 @@ const Auth: React.FC = () => {
             >
               {isLogin ? 'Login' : 'Register'}
             </Button>
-
             {/* reset password and change mode area */}
             <Grid container>
               <Grid item xs>
-                <span className={styles.login_reset} onClick={() => setOpenModal(true)}>
+                <span
+                  className={styles.login_reset}
+                  onClick={() => setOpenModal(true)}
+                >
                   Forgot password ?
                 </span>
               </Grid>
               <Grid item>
-                <span className={styles.login_toggleMode} onClick={() => setIsLogin(!isLogin)}>
+                <span
+                  className={styles.login_toggleMode}
+                  onClick={() => setIsLogin(!isLogin)}
+                >
                   {isLogin ? 'Create new account ?' : 'Back to login'}
                 </span>
               </Grid>
             </Grid>
-
-            {/* Google */}
+            {/* Signin with Google */}
             <Button
               fullWidth
               variant="contained"
@@ -276,15 +302,25 @@ const Auth: React.FC = () => {
             >
               SignIn with Google
             </Button>
+            {/* Signin with Facebook */}
+            <Button
+              fullWidth
+              variant="contained"
+              color="default"
+              className={classes.submit}
+              startIcon={<FacebookIcon />}
+              onClick={signInFacebook}
+            >
+              SignIn with Facebook
+            </Button>
           </form>
-
           {/* modal */}
           <Modal open={openModal} onClose={() => setOpenModal(false)}>
             <div style={getModalStyle()} className={classes.modal}>
               <div className={styles.login_modal}>
                 <TextField
                   InputLabelProps={{
-                    shrink: true,
+                    shrink: true
                   }}
                   type="email"
                   name="email"

@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
+// css
 import styles from './Feed.module.scss';
+// firebase
 import { db } from '../firebase';
+// Component
 import TweetInput from './TweetInput';
 import Post from './Post';
 
-const Feed: React.FC = () => {
+const Feed: React.FC = memo(() => {
   // state
   const [posts, setPosts] = useState([
     {
@@ -13,8 +16,8 @@ const Feed: React.FC = () => {
       image: '',
       text: '',
       timestamp: null,
-      username: '',
-    },
+      username: ''
+    }
   ]);
 
   useEffect(() => {
@@ -29,9 +32,9 @@ const Feed: React.FC = () => {
             image: doc.data().image,
             text: doc.data().text,
             timestamp: doc.data().timestamp,
-            username: doc.data().username,
-          })),
-        ),
+            username: doc.data().username
+          }))
+        )
       );
     return () => {
       unSub();
@@ -41,7 +44,6 @@ const Feed: React.FC = () => {
   return (
     <div className={styles.feed}>
       <TweetInput />
-
       {posts[0]?.id && (
         <>
           {posts.map((post) => (
@@ -59,6 +61,6 @@ const Feed: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default Feed;

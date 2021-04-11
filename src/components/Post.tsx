@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
+// css
 import styles from './Post.module.scss';
-import { db } from '../firebase';
-import firebase from 'firebase/app';
+// redux
 import { useSelector } from 'react-redux';
 import { selectUser } from '../features/userSlice';
+// firebase
+import firebase from 'firebase/app';
+import { db } from '../firebase';
+// MUI stuff
 import { Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MessageIcon from '@material-ui/icons/Message';
@@ -17,7 +21,6 @@ interface PROPS {
   timestamp: any;
   username: string;
 }
-
 interface COMMENT {
   id: string;
   avatar: string;
@@ -25,19 +28,18 @@ interface COMMENT {
   timestamp: any;
   username: string;
 }
-
+// MUI styles
 const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(3),
     height: theme.spacing(3),
-    marginRight: theme.spacing(1),
-  },
+    marginRight: theme.spacing(1)
+  }
 }));
 
-const Post: React.FC<PROPS> = (props) => {
+const Post: React.FC<PROPS> = memo((props) => {
   const classes = useStyles();
   const user = useSelector(selectUser);
-
   // state
   const [openComments, setOpenComments] = useState(false);
   const [comment, setComment] = useState('');
@@ -47,8 +49,8 @@ const Post: React.FC<PROPS> = (props) => {
       avatar: '',
       text: '',
       username: '',
-      timestamp: null,
-    },
+      timestamp: null
+    }
   ]);
 
   useEffect(() => {
@@ -64,11 +66,11 @@ const Post: React.FC<PROPS> = (props) => {
             avatar: doc.data().avatar,
             text: doc.data().text,
             username: doc.data().username,
-            timestamp: doc.data().timestamp,
-          })),
+            timestamp: doc.data().timestamp
+          }))
         );
       });
-    
+
     return () => {
       unSub();
     };
@@ -80,7 +82,7 @@ const Post: React.FC<PROPS> = (props) => {
       avatar: user.photoUrl,
       text: comment,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      username: user.displayName,
+      username: user.displayName
     });
     setComment('');
   };
@@ -95,7 +97,9 @@ const Post: React.FC<PROPS> = (props) => {
           <div className={styles.post_header}>
             <h3>
               <span className={styles.post_headerUser}>@{props.username}</span>
-              <span className={styles.post_headerTime}>{new Date(props.timestamp?.toDate()).toLocaleString()}</span>
+              <span className={styles.post_headerTime}>
+                {new Date(props.timestamp?.toDate()).toLocaleString()}
+              </span>
             </h3>
           </div>
           <div className={styles.post_tweet}>
@@ -108,7 +112,10 @@ const Post: React.FC<PROPS> = (props) => {
           </div>
         )}
 
-        <MessageIcon className={styles.post_commentIcon} onClick={() => setOpenComments(!openComments)} />
+        <MessageIcon
+          className={styles.post_commentIcon}
+          onClick={() => setOpenComments(!openComments)}
+        />
 
         {openComments && (
           <>
@@ -117,7 +124,9 @@ const Post: React.FC<PROPS> = (props) => {
                 <Avatar src={com.avatar} className={classes.small} />
                 <span className={styles.post_commentUser}>@{com.username}</span>
                 <span className={styles.post_commentText}>{com.text} </span>
-                <span className={styles.post_headerTime}>{new Date(com.timestamp?.toDate()).toLocaleString()}</span>
+                <span className={styles.post_headerTime}>
+                  {new Date(com.timestamp?.toDate()).toLocaleString()}
+                </span>
               </div>
             ))}
 
@@ -128,11 +137,15 @@ const Post: React.FC<PROPS> = (props) => {
                   type="text"
                   placeholder="Type new comment..."
                   value={comment}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComment(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setComment(e.target.value)
+                  }
                 />
                 <button
                   disabled={!comment}
-                  className={comment ? styles.post_button : styles.post_buttonDisable}
+                  className={
+                    comment ? styles.post_button : styles.post_buttonDisable
+                  }
                   type="submit"
                 >
                   <SendIcon />
@@ -144,6 +157,6 @@ const Post: React.FC<PROPS> = (props) => {
       </div>
     </div>
   );
-};
+});
 
 export default Post;

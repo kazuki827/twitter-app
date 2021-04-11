@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
+// css
 import styles from './TweetInput.module.scss';
-import { storage, db, auth } from '../firebase';
-import firebase from 'firebase/app';
+// redux
 import { useSelector } from 'react-redux';
 import { selectUser } from '../features/userSlice';
+// firebase
+import { storage, db, auth } from '../firebase';
+import firebase from 'firebase/app';
+// MUI stuff
 import { Avatar, Button, IconButton } from '@material-ui/core';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 
-const TweetInput: React.FC = () => {
+const TweetInput: React.FC = memo(() => {
   const user = useSelector(selectUser);
-
   // state
   const [tweetImage, setTweetImage] = useState<File | null>(null);
   const [tweetMsg, setTweetMsg] = useState('');
@@ -24,7 +27,8 @@ const TweetInput: React.FC = () => {
     e.preventDefault();
     // tweetImageがある場合
     if (tweetImage) {
-      const S = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      const S =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       const N = 16;
       const randomChar = Array.from(crypto.getRandomValues(new Uint32Array(N)))
         .map((n) => S[n % S.length])
@@ -52,10 +56,10 @@ const TweetInput: React.FC = () => {
                 image: url,
                 text: tweetMsg,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                username: user.displayName,
+                username: user.displayName
               });
             });
-        },
+        }
       );
       // tweetImageがない場合
     } else {
@@ -64,10 +68,9 @@ const TweetInput: React.FC = () => {
         image: '',
         text: tweetMsg,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        username: user.displayName,
+        username: user.displayName
       });
     }
-
     // state reset
     setTweetImage(null);
     setTweetMsg('');
@@ -94,22 +97,31 @@ const TweetInput: React.FC = () => {
           />
           <IconButton>
             <label>
-              <AddAPhotoIcon className={tweetImage ? styles.tweet_addIconLoaded : styles.tweet_addIcon} />
-              <input className={styles.tweet_hiddenIcon} type="file" onChange={onChangeImageHandler} />
+              <AddAPhotoIcon
+                className={
+                  tweetImage ? styles.tweet_addIconLoaded : styles.tweet_addIcon
+                }
+              />
+              <input
+                className={styles.tweet_hiddenIcon}
+                type="file"
+                onChange={onChangeImageHandler}
+              />
             </label>
           </IconButton>
         </div>
-
         <Button
           type="submit"
           disabled={!tweetMsg}
-          className={tweetMsg ? styles.tweet_sendBtn : styles.tweet_sendDisableBtn}
+          className={
+            tweetMsg ? styles.tweet_sendBtn : styles.tweet_sendDisableBtn
+          }
         >
           Tweet
         </Button>
       </form>
     </>
   );
-};
+});
 
 export default TweetInput;

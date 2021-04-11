@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import styles from './App.module.css';
+import styles from './App.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectUser, login, logout } from './features/userSlice';
 import { auth } from './firebase';
@@ -7,13 +7,15 @@ import Feed from './components/Feed';
 import Auth from './components/Auth';
 
 const App: React.FC = () => {
-  // storeのuser stateを取得
+  // redux storeのuser stateを取得
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // firebaseのユーザーに対して何らかの変化があったときに毎回呼び出される。
+    // firebaseのユーザーに何らかの変化があったときに毎回呼び出される。
+    // 現在ログインしているユーザーを取得。
     const unSub = auth.onAuthStateChanged((authUser) => {
+      // User is signed in.
       if (authUser) {
         dispatch(
           login({
@@ -22,6 +24,7 @@ const App: React.FC = () => {
             displayName: authUser.displayName,
           }),
         );
+        // No user is signed in.
       } else {
         dispatch(logout());
       }

@@ -56,7 +56,7 @@ const TweetInput: React.FC = memo(() => {
                 image: url,
                 text: tweetMsg,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                username: user.displayName
+                username: user.displayName,
               });
             });
         }
@@ -68,7 +68,7 @@ const TweetInput: React.FC = memo(() => {
         image: '',
         text: tweetMsg,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        username: user.displayName
+        username: user.displayName,
       });
     }
     // state reset

@@ -18,7 +18,7 @@ import {
   makeStyles,
   Modal,
   IconButton,
-  Box
+  Box,
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import CameraIcon from '@material-ui/icons/Camera';
@@ -34,13 +34,13 @@ function getModalStyle() {
   return {
     top: `${top}%`,
     left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`
+    transform: `translate(-${top}%, -${left}%)`,
   };
 }
 // MUI styles
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100vh'
+    height: '100vh',
   },
   modal: {
     outline: 'none',
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     backgroundColor: 'white',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(10)
+    padding: theme.spacing(10),
   },
   image: {
     backgroundImage: 'url(https://source.unsplash.com/random)',
@@ -59,25 +59,25 @@ const useStyles = makeStyles((theme) => ({
         ? theme.palette.grey[50]
         : theme.palette.grey[900],
     backgroundSize: 'cover',
-    backgroundPosition: 'center'
+    backgroundPosition: 'center',
   },
   paper: {
     margin: theme.spacing(8, 4),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: '100%',
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 const Auth: React.FC = () => {
@@ -144,12 +144,12 @@ const Auth: React.FC = () => {
     }
     await authUser.user?.updateProfile({
       displayName: username,
-      photoURL: url
+      photoURL: url,
     });
     dispatch(
       updateUserProfile({
         displayName: username,
-        photoUrl: url
+        photoUrl: url,
       })
     );
   };
@@ -320,7 +320,7 @@ const Auth: React.FC = () => {
               <div className={styles.login_modal}>
                 <TextField
                   InputLabelProps={{
-                    shrink: true
+                    shrink: true,
                   }}
                   type="email"
                   name="email"

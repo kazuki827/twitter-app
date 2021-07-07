@@ -16,8 +16,8 @@ const Feed: React.FC = memo(() => {
       image: '',
       text: '',
       timestamp: null,
-      username: ''
-    }
+      username: '',
+    },
   ]);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const Feed: React.FC = memo(() => {
             image: doc.data().image,
             text: doc.data().text,
             timestamp: doc.data().timestamp,
-            username: doc.data().username
+            username: doc.data().username,
           }))
         )
       );

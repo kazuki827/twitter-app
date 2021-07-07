@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(3),
     height: theme.spacing(3),
-    marginRight: theme.spacing(1)
-  }
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const Post: React.FC<PROPS> = memo((props) => {
@@ -49,8 +49,8 @@ const Post: React.FC<PROPS> = memo((props) => {
       avatar: '',
       text: '',
       username: '',
-      timestamp: null
-    }
+      timestamp: null,
+    },
   ]);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const Post: React.FC<PROPS> = memo((props) => {
             avatar: doc.data().avatar,
             text: doc.data().text,
             username: doc.data().username,
-            timestamp: doc.data().timestamp
+            timestamp: doc.data().timestamp,
           }))
         );
       });
@@ -82,7 +82,7 @@ const Post: React.FC<PROPS> = memo((props) => {
       avatar: user.photoUrl,
       text: comment,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      username: user.displayName
+      username: user.displayName,
     });
     setComment('');
   };

@@ -22,7 +22,7 @@ const App: React.FC = () => {
             uid: authUser.uid,
             photoUrl: authUser.photoURL,
             displayName: authUser.displayName,
-          }),
+          })
         );
         // No user is signed in.
       } else {
